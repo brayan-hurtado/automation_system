@@ -1,4 +1,4 @@
-
+from bd_connector import *
 
 class Usuario_sesion:
     def __init__(self, idUser, userName, password, worker_role, estado):
