@@ -43,6 +43,27 @@ class Solicitudes:
         self.dateAsign = dateAsign
         self.dateUpdated = None
     
+    @staticmethod
+    def mostrar_datos(IdOrden):
+        conexion = obtener_conexion()
+        with conexion.cursor(pymysql.cursors.DictCursor) as cursor:
+           sql = "SELECT IdOrden, servicio, logica, status, clientName, clientPlace, clientTel, rut, descripcion, deadline, dateAsign, dateUpdated FROM solicitudes WHERE IdOrden = %s"
+           cursor.execute(sql, (IdOrden,))
+           consulta = cursor.fetchone()
+        conexion.close()
+        return consulta
+    
+    @staticmethod
+    def listar_datos():
+        conexion = obtener_conexion()
+        with conexion.cursor(pymysql.cursors.DictCursor) as cursor:
+            sql = "SELECT IdOrden, servicio, logica, status, clientName, clientPlace, clientTel, rut, descripcion, deadline, dateAsign, dateUpdated FROM solicitudes"
+            cursor.execute(sql)
+            busqueda = cursor.fetchall()
+            total = len(busqueda)
+        conexion.close()
+        return busqueda
+    
     @classmethod
     def crear_solicitud(cls, solicitud):
         conexion = obtener_conexion()

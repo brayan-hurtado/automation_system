@@ -8,6 +8,11 @@ msg = ''
 tipo = ''
 
 @app.route("/")
+@app.route('/Data_base', methods=['GET', 'POST'])
+def home():
+    solicitudes = Solicitudes.listar_datos()
+    return render_template('Data_base.html', solicitudes = solicitudes)
+
 @app.route('/asesor_sac')
 def asesor():
     solicitudes = Solicitudes.listar_datos()
@@ -32,4 +37,14 @@ def guardar_solicitud():
         
         solicitud = Solicitudes(servicio, logica, clientName, clientPlace, clientTel, rut, descripcion, deadline, dateAsign)
         Solicitudes.crear_solicitud(solicitud)    
+    return redirect(url_for('home'))
+
+@app.route("/ver_detalles_solicitud/<int:IdOrden>", methods=['GET'])
+def viewDetalles(IdOrden):
+    if request.method == 'GET':
+        solicitud = Solicitudes.mostrar_datos(IdOrden)
+        if solicitud:
+            return render_template('view.html', infoSolicitud = solicitud, msg='Detalles de la solicitud', tipo=1)
+        else:
+            return render_template('Data_base.html', msg = 'No existe la solicitud', tipo=1)
     return redirect(url_for('home'))
