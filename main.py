@@ -62,6 +62,12 @@ def actualizar_orden(IdOrden):
         Solicitudes.update_request(solicitud)
     return redirect('/Data_base')
 
+@app.route("/eliminar_orden/<int:IdOrden>", methods=['POST'])
+def eliminar_orden(IdOrden):
+    IdOrden = request.form['IdOrden']
+    Solicitudes.eliminar_orden(IdOrden)
+    return redirect('/Data_base')
+
 @app.route("/ver_detalles_solicitud/<int:IdOrden>", methods=['GET'])
 def viewDetalles(IdOrden):
     if request.method == 'GET':
@@ -71,3 +77,7 @@ def viewDetalles(IdOrden):
         else:
             return render_template('Data_base.html', msg = 'No existe la solicitud', tipo=1)
     return redirect(url_for('home'))
+
+#Inicializar el servidor
+if __name__ == "__main__":
+    app.run(debug=True)

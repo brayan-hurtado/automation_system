@@ -145,6 +145,16 @@ class Solicitudes:
         finally:
             if conexion:
                 conexion.close()
+    
+    @classmethod
+    def eliminar_orden(cls, IdOrden):
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            sql = "DELETE FROM solicitudes WHERE IdOrden=%s"
+            cursor.execute(sql, (IdOrden,))
+            solicitud = cursor.rowcount
+            conexion.commit()
+        return solicitud
 
 class Automatized_MG:
     def __init__(self):
