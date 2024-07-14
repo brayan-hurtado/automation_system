@@ -42,6 +42,17 @@ class Solicitudes:
         self.deadline = deadline
         self.dateAsign = dateAsign
         self.dateUpdated = None
+    
+    @classmethod
+    def crear_solicitud(cls, solicitud):
+        conexion = obtener_conexion()
+        with conexion.cursor(pymysql.cursors.DictCursor) as cursor:
+            sql = "INSERT INTO solicitudes(servicio, logica, clientName, clientPlace, clientTel, rut, descripcion, deadline, dateAsign) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            cursor.execute(sql, (solicitud.servicio, solicitud.logica, solicitud.clientName, solicitud.clientPlace, solicitud.clientTel, solicitud.rut, solicitud.descripcion, solicitud.deadline, solicitud.dateAsign))
+            solicitud.IdOrden = cursor.lastrowid
+            conexion.commit()
+            new_rows = cursor.rowcount
+        return new_rows
 
 class Automatized_MG:
     def __init__(self):
