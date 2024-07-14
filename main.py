@@ -39,6 +39,29 @@ def guardar_solicitud():
         Solicitudes.crear_solicitud(solicitud)    
     return redirect(url_for('home'))
 
+@app.route("/formulario_editar_solicitud/<int:IdOrden>", methods=['GET'])
+def editar_solicitud(IdOrden):
+    solicitud = Solicitudes.obtener_orden_id(IdOrden)
+    return render_template('editar_registro.html', solicitud=solicitud)
+
+
+@app.route("/actualizar_orden/<int:IdOrden>", methods=['POST'])
+def actualizar_orden(IdOrden):
+    if request.method == 'POST':
+        servicio = request.form['servicio']
+        logica = request.form['logica']
+        clientName = request.form['clientName']
+        clientPlace = request.form['clientPlace']
+        clientTel = request.form['clientTel']
+        rut = request.form['rut']
+        descripcion = request.form['descripcion']
+        deadline = request.form['deadline']
+        dateAsign = request.form['dateAsign']
+        
+        solicitud = Solicitudes(servicio, logica, clientName, clientPlace, clientTel, rut, descripcion, deadline, dateAsign, IdOrden)
+        Solicitudes.update_request(solicitud)
+    return redirect('/Data_base')
+
 @app.route("/ver_detalles_solicitud/<int:IdOrden>", methods=['GET'])
 def viewDetalles(IdOrden):
     if request.method == 'GET':
