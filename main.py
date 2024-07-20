@@ -35,7 +35,8 @@ def guardar_solicitud():
         deadline = request.form['deadline']
         dateAsign = request.form['dateAsign']
         
-        solicitud = Solicitudes(servicio, logica, clientName, clientPlace, clientTel, rut, descripcion, deadline, dateAsign)
+        solicitud = Solicitudes(servicio, logica, clientName, clientPlace, clientTel, rut, descripcion, 
+                                deadline, dateAsign)
         Solicitudes.crear_solicitud(solicitud)    
     return redirect(url_for('home'))
 
@@ -58,7 +59,8 @@ def actualizar_orden(IdOrden):
         deadline = request.form['deadline']
         dateAsign = request.form['dateAsign']
         
-        solicitud = Solicitudes(servicio, logica, clientName, clientPlace, clientTel, rut, descripcion, deadline, dateAsign, IdOrden)
+        solicitud = Solicitudes(servicio, logica, clientName, clientPlace, clientTel, rut, descripcion, deadline, 
+                                dateAsign, IdOrden)
         Solicitudes.update_request(solicitud)
     return redirect('/Data_base')
 

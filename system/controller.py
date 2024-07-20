@@ -29,7 +29,8 @@ class BackOffice:
         self.telefono = telefono
 
 class Solicitudes:
-    def __init__(self, servicio, logica, clientName, clientPlace, clientTel, rut, descripcion, deadline, dateAsign, IdOrden=None, status='Abierta'):
+    def __init__(self, servicio, logica, clientName, clientPlace, clientTel, rut, descripcion, deadline, dateAsign, 
+                 IdOrden=None, status='Abierta'):
         self.IdOrden = IdOrden
         self.servicio = servicio
         self.logica = logica
@@ -47,7 +48,8 @@ class Solicitudes:
     def mostrar_datos(IdOrden):
         conexion = obtener_conexion()
         with conexion.cursor(pymysql.cursors.DictCursor) as cursor:
-           sql = "SELECT IdOrden, servicio, logica, status, clientName, clientPlace, clientTel, rut, descripcion, deadline, dateAsign, dateUpdated FROM solicitudes WHERE IdOrden = %s"
+           sql = "SELECT IdOrden, servicio, logica, status, clientName, clientPlace, clientTel, rut, \
+           descripcion, deadline, dateAsign, dateUpdated FROM solicitudes WHERE IdOrden = %s"
            cursor.execute(sql, (IdOrden,))
            consulta = cursor.fetchone()
         conexion.close()
@@ -57,7 +59,8 @@ class Solicitudes:
     def listar_datos():
         conexion = obtener_conexion()
         with conexion.cursor(pymysql.cursors.DictCursor) as cursor:
-            sql = "SELECT IdOrden, servicio, logica, status, clientName, clientPlace, clientTel, rut, descripcion, deadline, dateAsign, dateUpdated FROM solicitudes"
+            sql = "SELECT IdOrden, servicio, logica, status, clientName, clientPlace, clientTel, rut, \
+                descripcion, deadline, dateAsign, dateUpdated FROM solicitudes"
             cursor.execute(sql)
             busqueda = cursor.fetchall()
             total = len(busqueda)
@@ -68,8 +71,11 @@ class Solicitudes:
     def crear_solicitud(cls, solicitud):
         conexion = obtener_conexion()
         with conexion.cursor(pymysql.cursors.DictCursor) as cursor:
-            sql = "INSERT INTO solicitudes(servicio, logica, clientName, clientPlace, clientTel, rut, descripcion, deadline, dateAsign) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-            cursor.execute(sql, (solicitud.servicio, solicitud.logica, solicitud.clientName, solicitud.clientPlace, solicitud.clientTel, solicitud.rut, solicitud.descripcion, solicitud.deadline, solicitud.dateAsign))
+            sql = "INSERT INTO solicitudes(servicio, logica, clientName, clientPlace, clientTel, rut, \
+            descripcion, deadline, dateAsign) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            cursor.execute(sql, (solicitud.servicio, solicitud.logica, solicitud.clientName, solicitud.clientPlace, 
+                                 solicitud.clientTel, solicitud.rut, solicitud.descripcion, solicitud.deadline, 
+                                 solicitud.dateAsign))
             solicitud.IdOrden = cursor.lastrowid
             conexion.commit()
             new_rows = cursor.rowcount
@@ -79,7 +85,8 @@ class Solicitudes:
     def obtener_orden_id(IdOrden):
         conexion = obtener_conexion()
         with conexion.cursor(pymysql.cursors.DictCursor) as cursor:
-            sql = "SELECT IdOrden, servicio, logica, clientName, clientPlace, clientTel, rut, descripcion, deadline, dateAsign FROM solicitudes WHERE IdOrden=%s"
+            sql = "SELECT IdOrden, servicio, logica, clientName, clientPlace, clientTel, rut, \
+            descripcion, deadline, dateAsign FROM solicitudes WHERE IdOrden=%s"
             cursor.execute(sql, (IdOrden,))
             solicitud = cursor.fetchone()
         conexion.close()
