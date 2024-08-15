@@ -1,36 +1,76 @@
 from bd_connector import *
+from enum import Enum
 
-class Usuario_sesion:
-    def __init__(self, idUser, userName, password, worker_role, estado):
+class WorkerRole(Enum):
+    ASESORES = "Asesor"
+    BACKOFFICE = "Backoffice"
+
+class Usuarios:
+    def __init__(self, idUser, email, password, nombre, apellido, localidad, telefono, estado=True, worker_role=WorkerRole):
         self.__idUser = idUser
-        self.__userName = userName
+        self.__email = email
         self.__password = password
+        self.nombre = nombre
+        self.apellido = apellido
+        self.localidad = localidad
+        self.telefono = telefono
         self.worker_role = worker_role
         self.estado = estado
 
-class Asesor_SAC:
-    def __init__(self,idWorker, userName, password, worker_role, estado, nombre, apellido, localidad, telefono):
-        super().__init__(userName, password, worker_role, estado)
-        self.__idWorker = idWorker
-        self.nombre = nombre
-        self.apellido = apellido
-        self.localidad = localidad
-        self.telefono = telefono
+class Asesor_SAC(Usuarios):
+    def __init__(self):
+        super().__init__(idUser, email, password, nombre, apellido, localidad, telefono, estado, WorkerRole.ASESORES)
         self.solicitudes = Solicitudes() #Relación de composición.
 
-class BackOffice:
-    def __init__(self, idBO, userName, password, estado, nombre, apellido, localidad, worker_role, telefono):
-        super().__init__(userName, password, estado)
-        self.__idBO = idBO
-        self.nombre = nombre
-        self.apellido = apellido
-        self.localidad = localidad
-        self.worker_role = worker_role
-        self.telefono = telefono
+class BackOffice(Usuarios):
+    def __init__(self):
+        super().__init__(idUser, email, password, nombre, apellido, localidad, telefono, estado, WorkerRole.BACKOFFICE)
 
+class UserManager:
+    def user_exists(self, idUser):
+        conexion = obtener_conexion()
+        try:
+            with conexion.cursor() as cursor:
+                cursor.execute('SELECT * FROM users WHERE idUser=%s', (idUser,))
+                user = cursor.fetchone()
+        finally:
+            conexion.close()
+        return user is not None
+    
+    def register_user(self, usuario : Usuarios):
+        conexion = obtener_conexion()
+        try:
+            with conexion.cursor() as cursor:
+                sql = "INSERT INTO users (email, password, nombre, apellido, localidad, telefono, worker_role) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+                cursor.execute(sql, (usuario.email, usuario.password, usuario.nombre, usuario.apellido, usuario.localidad, usuario.telefono, usuario.worker_role))
+                conexion.commit()
+        finally:
+            conexion.close()
+    
+    def get_user(self, idUser):
+        conexion = obtener_conexion()
+        try:
+            with conexion.cursor() as cursor:
+                cursor.execute('SELECT * FROM users WHERE idUser=%s', (idUser,))
+                user_data = cursor.fetchone()
+                if user_data:
+                    return Usuarios(
+                        idUser=user_data['idUser'],
+                        email=user_data['email'],
+                        password=user_data['password'],
+                        nombre=user_data['nombre'],
+                        apellido=user_data['apellido'],
+                        localidad=user_data['localidad'],
+                        telefono=user_data['telefono'],
+                        worker_role=user_data['worker_role']
+                    )
+                return None
+        finally:
+            conexion.close()
+            
 class Solicitudes:
-    def __init__(self, servicio, logica, clientName, clientPlace, clientTel, rut, descripcion, deadline, dateAsign, 
-                 IdOrden=None, status='Abierta'):
+    def __init__(self, servicio, logica, clientName, clientPlace, clientTel, rut, descripcion, 
+                 deadline, dateAsign, IdOrden=None, status='Abierta'):
         self.IdOrden = IdOrden
         self.servicio = servicio
         self.logica = logica
