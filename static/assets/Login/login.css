@@ -70,10 +70,9 @@ section{
 }
 
 .form_box{
-
     position: relative;
-    width: 400px;
-    height: 450px;
+    width: 650px;
+    height: 600px;
     background: transparent;
     border: 2px solid rgba(255, 255, 255, 0.5);
     border-radius: 20px;
@@ -82,6 +81,19 @@ section{
     justify-content: center;
     align-items: center;
 
+}
+
+.form_box-register{
+    position: relative;
+    width: 500px;
+    height: 750px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    backdrop-filter:  blur(20px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 h2{
@@ -145,6 +157,23 @@ input:valid ~ label{
 
 }
 
+.inputbox-option{
+    position: relative;
+    margin: 30px 0;
+    width: 310px;
+}
+
+.inputbox-option label{
+    top: 50%;
+    left: 1%;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 1em;
+    pointer-events: none;
+    transition: .5s;
+
+}
+
 .forget{
 
     margin: -15px 0 15px;
@@ -186,7 +215,7 @@ button{
     cursor: pointer;
     font-size: 1em;
     font-weight: 600;
-    color: #003F79;
+    color: #bcbec0;
     
 }
 
@@ -216,4 +245,46 @@ button a {
 
     text-decoration: underline;
 
+}
+
+/* Contenedor para los mensajes de alerta */
+.custom-alert-container {
+    position: absolute; /* Posiciona el contenedor de alertas fuera del flujo normal */
+    top: 0; /* Ajusta la posición desde el borde superior */
+    left: 50%; /* Centra horizontalmente el contenedor */
+    transform: translateX(-50%); /* Ajusta la posición horizontalmente */
+    width: 100%; /* Ajusta el ancho del contenedor */
+    max-width: 500px; /* Limita el ancho máximo del contenedor */
+    z-index: 1000; /* Asegura que esté sobre otros elementos */
+    margin: 1rem; /* Margen alrededor del contenedor */
+}
+
+/* Estilo para cada mensaje de alerta */
+.custom-alert {
+    position: relative;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    background-color: #FFFFE0; /* Color de fondo (azul claro) */
+    color:  #333333; /* Color del texto (azul oscuro) */
+    border-color: #DDDDDD; /* Color del borde (azul más claro) */
+    font-family: Arial, sans-serif; /* Fuente */
+}
+
+/* Botón de cierre */
+.close-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color:  #333333; /* Color del botón de cierre */
+}
+
+/* Botón de cierre en hover */
+.close-btn:hover {
+    color:  #1b1b1b; /* Color más oscuro al pasar el ratón */
 }

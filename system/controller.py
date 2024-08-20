@@ -1,13 +1,10 @@
 from bd_connector import *
-from enum import Enum
+from werkzeug.security import check_password_hash
+from flask_login import UserMixin
 
-class WorkerRole(Enum):
-    ASESORES = "Asesor"
-    BACKOFFICE = "Backoffice"
-
-class Usuarios:
-    def __init__(self, idUser, email, password, nombre, apellido, localidad, telefono, estado=True, worker_role=WorkerRole):
-        self.__idUser = idUser
+class Usuarios(UserMixin):
+    def __init__(self, idUser, email, password, nombre='', apellido='', localidad='', telefono='', worker_role='', estado=False) -> None:
+        self.idUser = idUser
         self.__email = email
         self.__password = password
         self.nombre = nombre
@@ -16,58 +13,132 @@ class Usuarios:
         self.telefono = telefono
         self.worker_role = worker_role
         self.estado = estado
-
-class Asesor_SAC(Usuarios):
-    def __init__(self):
-        super().__init__(idUser, email, password, nombre, apellido, localidad, telefono, estado, WorkerRole.ASESORES)
-        self.solicitudes = Solicitudes() #Relación de composición.
-
-class BackOffice(Usuarios):
-    def __init__(self):
-        super().__init__(idUser, email, password, nombre, apellido, localidad, telefono, estado, WorkerRole.BACKOFFICE)
-
-class UserManager:
-    def user_exists(self, idUser):
+    
+    def get_id(self):
+        return str(self.idUser) #El identificador único debe estar en cadena
+    
+    def get_email(self):
+        return self.__email
+    
+    def get_password(self):
+        return self.__password
+    
+    @classmethod
+    def set_user_active(cls, email):
         conexion = obtener_conexion()
         try:
             with conexion.cursor() as cursor:
-                cursor.execute('SELECT * FROM users WHERE idUser=%s', (idUser,))
-                user = cursor.fetchone()
+                sql = "UPDATE users SET estado = %s WHERE email = %s"
+                cursor.execute(sql, (1, email))  # 1 para True
+                conexion.commit()
         finally:
             conexion.close()
-        return user is not None
-    
-    def register_user(self, usuario : Usuarios):
+
+    @classmethod
+    def set_user_inactive(cls, email):
         conexion = obtener_conexion()
         try:
             with conexion.cursor() as cursor:
-                sql = "INSERT INTO users (email, password, nombre, apellido, localidad, telefono, worker_role) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-                cursor.execute(sql, (usuario.email, usuario.password, usuario.nombre, usuario.apellido, usuario.localidad, usuario.telefono, usuario.worker_role))
+                sql = "UPDATE users SET estado = %s WHERE email = %s"
+                cursor.execute(sql, (0, email))  # 0 para False
                 conexion.commit()
         finally:
             conexion.close()
     
-    def get_user(self, idUser):
+   
+    @classmethod
+    def check_password(cls, hashed_password, __password):
+        return check_password_hash(hashed_password, __password)
+    
+    
+    @classmethod
+    def register_user(cls, usuario):
         conexion = obtener_conexion()
         try:
             with conexion.cursor() as cursor:
-                cursor.execute('SELECT * FROM users WHERE idUser=%s', (idUser,))
-                user_data = cursor.fetchone()
-                if user_data:
-                    return Usuarios(
-                        idUser=user_data['idUser'],
-                        email=user_data['email'],
-                        password=user_data['password'],
-                        nombre=user_data['nombre'],
-                        apellido=user_data['apellido'],
-                        localidad=user_data['localidad'],
-                        telefono=user_data['telefono'],
-                        worker_role=user_data['worker_role']
-                    )
-                return None
+
+                sql = "INSERT INTO users (email, password, nombre, apellido, localidad, telefono, worker_role, estado) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+                cursor.execute(sql, (usuario.get_email(), usuario.get_password(), usuario.nombre, usuario.apellido, usuario.localidad, usuario.telefono, usuario.worker_role, 0)) # Por defecto, estado es False (0)
+                usuario.idUser = cursor.lastrowid
+                conexion.commit()
         finally:
             conexion.close()
-            
+
+class Asesor_SAC(Usuarios):
+    def __init__(self, idUser, email, password, nombre, apellido, localidad, telefono, estado):
+        super().__init__(idUser, email, password, nombre, apellido, localidad, telefono, estado, worker_role='Asesor')
+        self.solicitudes = Solicitudes() #Relación de composición.
+
+class BackOffice(Usuarios):
+    def __init__(self, idUser, email, password, nombre, apellido, localidad, telefono, estado):
+        super().__init__(idUser, email, password, nombre, apellido, localidad, telefono, estado, worker_role='Backoffice')
+
+class UserManager:
+    @classmethod
+    def login_user(cls, usuario):
+        conexion = obtener_conexion()
+        try:
+            with conexion.cursor() as cursor:
+                sql = "SELECT idUser, email, password, nombre, apellido, localidad, telefono, worker_role, estado FROM users WHERE email=%s"
+                cursor.execute(sql, (usuario.get_email(),))
+                row = cursor.fetchone()
+                
+                #Verificar si el usuario existe
+                if row:
+                    idUser, stored_email, stored_password, nombre, apellido, localidad, telefono, worker_role, estado = row
+                    
+                    if Usuarios.check_password(stored_password, usuario.get_password()):
+
+                        return Usuarios(
+                            idUser=idUser,
+                            email=stored_email,
+                            password=stored_password,
+                            nombre=nombre,
+                            apellido=apellido,
+                            localidad=localidad,
+                            telefono=telefono,
+                            worker_role=worker_role,  # Almacena como WorkerRole
+                            estado=estado
+                        )
+                    else:
+                        return None
+                else:
+                    return None
+        except Exception as ex:
+            # Manejo de excepciones, podrías usar logging para registrar el error
+            raise Exception(f"Error al intentar iniciar sesión: {ex}")
+        finally:
+            conexion.close()
+    
+    @staticmethod
+    def get_user(idUser):
+        conexion = obtener_conexion()
+        with conexion.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute("""
+                SELECT idUser, email, password, nombre, apellido, localidad, telefono, worker_role, estado
+                FROM users
+                WHERE idUser=%s
+            """, (idUser,))
+            row = cursor.fetchone()
+        
+        conexion.close()
+        
+        if row:
+            return Usuarios(
+                email=row['email'],
+                password=row['password'],
+                nombre=row['nombre'],
+                apellido=row['apellido'],
+                localidad=row['localidad'],
+                telefono=row['telefono'],
+                worker_role=row['worker_role'],
+                idUser=row['idUser'],
+                estado=row['estado']
+            )
+        return None
+
+                
+                
 class Solicitudes:
     def __init__(self, servicio, logica, clientName, clientPlace, clientTel, rut, descripcion, 
                  deadline, dateAsign, IdOrden=None, status='Abierta'):

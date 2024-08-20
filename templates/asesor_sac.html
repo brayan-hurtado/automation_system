@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdn.tailwindcss.com"></script>
-    <title>Asesor</title>
+    <title>Sala de Gestión - Asesor</title>
     <link rel="icon" href="{{url_for('static', filename='assets/imgs/Logo-top.png')}}" type="image/x-icon">
     <link rel="stylesheet" href="{{url_for('static', filename='assets/css/style.css')}}">
 </head>
@@ -16,8 +16,8 @@
         </div>
         <div class="usuario">
             <div class="usuario-h3">
-                <h3>N.N</h3>
-                <h3>BackOffice</h3>
+              <h3>{{ current_user.nombre }}  {{ current_user.apellido }}</h3>
+              <h3>{{ current_user.worker_role }}</h3>
             </div>
             <ion-icon  class="iconos" name="person-circle-outline"></ion-icon>
         </div>
@@ -34,7 +34,7 @@
         <div class="navbar-iconos">
             <ion-icon name="settings-outline"></ion-icon>
             <ion-icon name="chatbox-outline"></ion-icon>
-            <ion-icon name="exit-outline"></ion-icon>
+            <a href="{{ url_for('logout') }}"><ion-icon name="exit-outline"></ion-icon></a>
             <ion-icon name="help-outline"></ion-icon>
         </div>
     </div>

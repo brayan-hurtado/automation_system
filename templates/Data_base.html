@@ -16,8 +16,8 @@
         </div>
         <div class="usuario">
             <div class="usuario-h3">
-                <h3>N.N</h3>
-                <h3>BackOffice</h3>
+                <h3>{{ current_user.nombre }}  {{ current_user.apellido }}</h3>
+                <h3>{{ current_user.worker_role }}</h3>
             </div>
             <ion-icon  class="iconos" name="person-circle-outline"></ion-icon>
         </div>
@@ -26,12 +26,12 @@
         <h2 class="text-2xl font-bold"> Data Base</h2>
     </div>
     <div class="navbar">
-        <li><a href="#" ><ion-icon name="home-outline" style= "margin-left: 30px;margin-right: 10px; font-size: 30px;"></ion-icon>Pagina Principal</a></li>
+        <li><a href="#" ><ion-icon name="home-outline" style= "margin-left: 30px;margin-right: 10px; font-size: 30px;"></ion-icon>Página Principal</a></li>
         <li><a href="#"><ion-icon name="person-outline" style= "margin-right: 10px; font-size: 30px;" ></ion-icon>Mi Cuenta</a></li>
-        <li><a href="{{url_for('asesor')}}"><ion-icon name="calendar-clear-outline" style= "margin-right: 10px; font-size: 30px;"></ion-icon>Sala de gestion</a></li>
-        <li><a href="#"><ion-icon name="people-outline" style= "margin-right: 10px; font-size: 30px;"></ion-icon>Contactanos</a></li>
+        <li><a href="{{url_for('management_room')}}"><ion-icon name="calendar-clear-outline" style= "margin-right: 10px; font-size: 30px;"></ion-icon>Sala de gestión</a></li>
+        <li><a href="#"><ion-icon name="people-outline" style= "margin-right: 10px; font-size: 30px;"></ion-icon>Contáctanos</a></li>
         <div class="navbar-iconos">
-            <a href="/index.html"><ion-icon name="exit-outline"></ion-icon></a> 
+            <a href="{{ url_for('logout') }}"><ion-icon name="exit-outline"></ion-icon></a> 
             <ion-icon name="help-circle-outline"></ion-icon>
             <ion-icon name="settings-outline"></ion-icon>
         </div>

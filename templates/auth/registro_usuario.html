@@ -4,15 +4,15 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="Login/login.css">
+<link rel="stylesheet" href="{{url_for('static', filename='assets/Login/login.css')}}">
 <title>Registrar cuenta</title>
-<link rel="icon" href="Login/Logo-top.png" type="image/x-icon">
+<link rel="icon" href="{{url_for('static', filename='assets/imgs/Logo-top.png')}}" type="image/x-icon">
 
 </head>
 <body>
     <header class="header">
         <div class="logo">
-            <img src="Login/Logo.png" alt="">
+            <img src="{{url_for('static', filename='assets/imgs/Logo.png')}}" alt="">
         </div>
         <!--
         <nav> 
@@ -24,9 +24,9 @@
         </nav> -->
     </header>
     <section>
-        <div class="form_box">
+        <div class="form_box-register">
             <div class="form_value">
-                <form method="post" action="">
+                <form action="{{ url_for('registrar_usuario')}}" method="post">
                     <h2>Registro de usuario</h2>
                      <div class="inputbox">
                         <ion-icon name="mail-outline"></ion-icon>
@@ -57,14 +57,14 @@
                         <input type="number" id="telefono" name="telefono" required>
                         <label for="telefono">Teléfono:</label>
                      </div>
-                     <div class="inputbox">
+                     <div class="inputbox-option">
                         <label for="worker_role">Rol:</label>
                         <select id="worker_role" name="worker_role" required>
-                            <option value="ASESORES">Asesor</option>
-                            <option value="BACKOFFICE">BackOffice</option>
+                            <option value="Asesor">Asesor</option>
+                            <option value="Backoffice">BackOffice</option>
                         </select>
                      </div>
-                     <button><a href="Data_Base/index.html">Entrar</a></button>
+                     <button type="submit">Enviar</button>
                 </form>
             </div>
         </div>

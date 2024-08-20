@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdn.tailwindcss.com"></script>
-    <title>Sala de Gestion</title>
+    <title>Sala de Gestión - BackOffice</title>
     <link rel="icon" href="{{url_for('static', filename='assets/imgs/Logo-top.png')}}" type="image/x-icon">
     <link rel="stylesheet" href="{{url_for('static', filename='assets/css/style.css')}}">
 </head>
@@ -16,25 +16,25 @@
         </div>
         <div class="usuario">
             <div class="usuario-h3">
-                <h3>N.N</h3>
-                <h3>BackOffice</h3>
+              <h3>{{ current_user.nombre }}  {{ current_user.apellido }}</h3>
+              <h3>{{ current_user.worker_role }}</h3>
             </div>
             <ion-icon  class="iconos" name="person-circle-outline"></ion-icon>
         </div>
     </header>
     <div class="salto">
-        <h2 class="text-2xl font-bold"> Sala de gestion</h2>
+        <h2 class="text-2xl font-bold"> Sala de gestión</h2>
     </div>
     <div class="navbar">
-        <li><a href="#" ><ion-icon name="return-up-back-outline" style="margin-left: 30px;margin-right: 10px; font-size: 30px;" ></ion-icon>Atras</a></li>
+        <li><a href="#" ><ion-icon name="return-up-back-outline" style="margin-left: 30px;margin-right: 10px; font-size: 30px;" ></ion-icon>Atrás</a></li>
         <li><a href="#">Tareas</a></li>
         <li><a href="#">Informes</a></li>
-        <li><a href="../Clientes/index.html">Clientes</a></li>
+        <li><a href="#">Clientes</a></li>
         <li><a href="#" style="border: none;">Soluciones Remotas</a></li>
         <div class="navbar-iconos">
             <ion-icon name="settings-outline"></ion-icon>
             <ion-icon name="chatbox-outline"></ion-icon>
-            <ion-icon name="exit-outline"></ion-icon>
+            <a href="{{ url_for('logout') }}"><ion-icon name="exit-outline"></ion-icon></a>
             <ion-icon name="help-outline"></ion-icon>
         </div>
     </div>

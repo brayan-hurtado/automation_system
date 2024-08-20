@@ -15,8 +15,8 @@
         </div>
         <div class="usuario">
             <div class="usuario-h3">
-                <h3>N.N</h3>
-                <h3>BackOffice</h3>
+              <h3>{{ current_user.nombre }}  {{ current_user.apellido }}</h3>
+              <h3>{{ current_user.worker_role }}</h3>
             </div>
             <ion-icon  class="iconos" name="person-circle-outline"></ion-icon>
         </div>
